@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>청화리젠트 월간보고</title>
+    <style>
+        body {
+            background-color: rgba(15, 23, 42, 0.8);
+            color: #FFFFFF;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s;
+        }
+        .glassmorphism {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            font-weight: bold;
+            margin: 0;
+        }
+        .sidebar {
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: rgba(10, 15, 25, 0.9);
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            margin: 15px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.02);
+        }
+        .btn {
+            background-color: cyan;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: purple;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background-color: rgba(10, 15, 25, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>네비게이션</h2>
+        <ul>
+            <li><a href="#reports">월간 보고서</a></li>
+            <li><a href="#electricity">전기 추적</a></li>
+            <li><a href="#residents">거주자 관리</a></li>
+            <li><a href="#settlements">퇴거 정산</a></li>
+            <li><a href="#expenses">비용 추적</a></li>
+            <li><a href="#messages">SMS 메시징</a></li>
+        </ul>
+    </div>
+    <main style="margin-left: 250px; padding: 20px;">
+        <h1>실시간 공지 시스템</h1>
+        <div class="card">
+            <h3>월간 보고서</h3>
+            <p>여기에 월간 보고서 내용이 포함됩니다.</p>
+            <button class="btn">보고서 다운로드</button>
+        </div>
+        <div class="card">
+            <h3>전기 소비 추적기</h3>
+            <p>여기에 전기 소비 내용을 포함합니다.</p>
+            <button class="btn">추적하기</button>
+        </div>
+        <footer>
+            <p>&copy; 2026 청화리젠트. 모든 권리 보유.</p>
+        </footer>
+    </main>
+</body>
+</html>
