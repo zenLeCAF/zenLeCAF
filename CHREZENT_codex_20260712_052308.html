@@ -3327,7 +3327,7 @@ h3{color:#0f172a !important;font-weight:700 !important}
 <button class="hamburger" onclick="document.querySelector('.globalTopMenu').classList.toggle('open');document.querySelector('.gtm-backdrop').classList.toggle('show')" title="메뉴">☰</button>
 <div class="gtm-backdrop" onclick="document.querySelector('.globalTopMenu').classList.remove('open');this.classList.remove('show')"></div>
 <div class="globalTopMenu">
-    <div class="gtm-brand">청화 REZENT<span class="gtm-brandSub" id="topMenuBuildId" title="빌드 ID (파일명과 동일)">CHREZENT_codex_20260712_051349</span></div>
+    <div class="gtm-brand">청화 REZENT<span class="gtm-brandSub" id="topMenuBuildId" title="빌드 ID (파일명과 동일)">CHREZENT_codex_20260712_052308</span></div>
 
     <div class="gtm-clock" id="miniClock" title="실시간 KST">
         <span class="gtm-clockDate mcDate" id="mcDate">-</span>
@@ -3497,7 +3497,7 @@ window._openExpenseRawPanelSafe = _openExpenseRawPanelSafe;
 </div>
 
 <script>
-const BUILD_TIMESTAMP = '20260712_051349'; // yyyyMMdd_HHmmss — 배포 시 이 값만 교체(이전 타임스탬프는 제거)
+const BUILD_TIMESTAMP = '20260712_052308'; // yyyyMMdd_HHmmss — 배포 시 이 값만 교체(이전 타임스탬프는 제거)
 // 버전 = 현재 열려 있는 실제 파일명 (파일명 = 빌드 스탬프 항상 일치). 파일명 못 구하면 BUILD_TIMESTAMP로 폴백
 const APP_VERSION = (function(){ try{ var f = decodeURIComponent((location.pathname||'').split('/').pop()||'').replace(/\.html?$/i,''); return f || ('CHREZENT_codex_' + BUILD_TIMESTAMP); }catch(e){ return 'CHREZENT_codex_' + BUILD_TIMESTAMP; } })();
 try{ var _topBuildEl=document.getElementById('topMenuBuildId'); if(_topBuildEl) _topBuildEl.textContent=APP_VERSION; }catch(_e){}
@@ -13769,7 +13769,7 @@ function closeAllPanels(){
 }
 // === KB 은행 입출금 원본 (엑셀 붙여넣기 → 표) ===
 // 코드 빌드 식별자 — 저장 파일명 타임스탬프와 동일. 화면/자동입력 팝업에 표시해 "최신본을 열었는지" 즉시 확인용.
-var APP_BUILD = '20260712_051349'
+var APP_BUILD = '20260712_052308'
 var _kbEsc = function(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
 var _kbAttr = function(s){ return _kbEsc(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;'); };
 var _kbParseCache = { raw:null, skip:null, parsed:null };
