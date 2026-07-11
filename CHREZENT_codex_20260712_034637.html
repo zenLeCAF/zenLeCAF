@@ -9802,6 +9802,40 @@ function _mgGetHandoverEdit(roomNo, tenantName){
     }
     return null;
 }
+function _mgHandoverTenantStartMonth(t){
+    var d = String((t && (t.moveInDate || t.contractStart || t.contractStartDate)) || '').replace(/[.\/]/g,'-');
+    var m = d.match(/^(\d{4})-(\d{1,2})/);
+    return m ? (m[1] + '-' + String(m[2]).padStart(2,'0')) : '';
+}
+function _mgResolveHandoverTarget(roomNo, tenantName){
+    var roomKey = _mgHandoverNormRoom(roomNo);
+    var cutoff = '2025-11'; // 인수월(2025-10)과 다음달 예외까지만 인수 대상
+    var room = null, rooms = Array.isArray(ROOMS) ? ROOMS : [];
+    for(var i=0;i<rooms.length;i++){
+        if(_mgHandoverNormRoom(rooms[i] && rooms[i].room) === roomKey){ room = rooms[i]; break; }
+    }
+    if(!room || !Array.isArray(room.tenants)) return {excluded:false, targetName:String(tenantName||'')};
+    var list = room.tenants.filter(Boolean);
+    if(tenantName){
+        for(var j=0;j<list.length;j++){
+            if(_mgHandoverNameMatch(tenantName, list[j].tenant)){
+                var sm = _mgHandoverTenantStartMonth(list[j]);
+                if(sm && sm > cutoff) return {excluded:true, targetName:list[j].tenant||tenantName};
+                return {excluded:false, targetName:list[j].tenant||tenantName};
+            }
+        }
+        return {excluded:false, targetName:String(tenantName||'')};
+    }
+    var acqT = null;
+    list.forEach(function(t){
+        var sm = _mgHandoverTenantStartMonth(t);
+        if(sm && sm <= cutoff){
+            if(!acqT) acqT = t;
+            else if(t.isPast && !acqT.isPast) acqT = t;
+        }
+    });
+    return acqT ? {excluded:false, targetName:acqT.tenant||''} : {excluded:true, targetName:''};
+}
 function _mgSetHandoverEdit(roomNo, tenantName, vals){
     var d = _mgHandoverEditLoad();
     var key = _mgHandoverEditKey(roomNo, tenantName || (vals && vals.tenant) || '');
@@ -9844,7 +9878,11 @@ function _mgToggleHandoverEdit(btn){
 
 function _mgFindHandoverDetail(roomNo, tenantName){
     var roomKey = _mgHandoverNormRoom(roomNo);
-    var edited = _mgGetHandoverEdit(roomNo, tenantName);
+    var target = (typeof _mgResolveHandoverTarget === 'function') ? _mgResolveHandoverTarget(roomNo, tenantName) : {excluded:false, targetName:tenantName};
+    if(target && target.excluded) return null;
+    var lookupTenantName = (target && target.targetName) ? target.targetName : tenantName;
+    var edited = _mgGetHandoverEdit(roomNo, lookupTenantName);
+    if(!edited && !tenantName) edited = _mgGetHandoverEdit(roomNo, '');
     if(edited) return {kind:'edit', source:'입력관리', room:edited.room||roomNo, tenant:edited.tenant||tenantName||'', months:edited.months||'', rent:edited.rent||'', elec:edited.elec||'', total:edited.total||'', memo:edited.memo||''};
     try{
         var hm2 = (typeof _hm2Load === 'function') ? _hm2Load() : null;
@@ -9863,11 +9901,11 @@ function _mgFindHandoverDetail(roomNo, tenantName){
             if(roomRows.length){
                 var picked = null;
                 for(var r=0;r<roomRows.length;r++){
-                    if(_mgHandoverNameMatch(tenantName, roomRows[r][1])){ picked = roomRows[r]; break; }
+                    if(_mgHandoverNameMatch(lookupTenantName, roomRows[r][1])){ picked = roomRows[r]; break; }
                 }
                 if(!picked) picked = roomRows[0];
                 if(picked){
-                    return {kind:'hm3', source:'인수메모3', room:picked[0]||'', tenant:picked[1]||'', months:picked[2]||'', rent:picked[3]||'', elec:picked[4]||'', total:picked[5]||''};
+                    return {kind:'hm3', source:'인수메모3', room:picked[0]||'', tenant:lookupTenantName||picked[1]||'', months:picked[2]||'', rent:picked[3]||'', elec:picked[4]||'', total:picked[5]||''};
                 }
             }
         }
@@ -9879,12 +9917,12 @@ function _mgFindHandoverDetail(roomNo, tenantName){
             var list = rr && Array.isArray(rr.tenants) ? rr.tenants : [];
             var tt = null;
             for(var j=0;j<list.length;j++){
-                if(_mgHandoverNameMatch(tenantName, list[j] && list[j].tenant)){ tt = list[j]; break; }
+                if(_mgHandoverNameMatch(lookupTenantName, list[j] && list[j].tenant)){ tt = list[j]; break; }
             }
-            if(!tt && !tenantName) tt = list[0];
+            if(!tt && !lookupTenantName) tt = list[0];
             if(tt){
                 var has = !!(tt.handoverDiff || Number(tt.handoverFixedUnpaid)||Number(tt.handoverElecUnpaid)||String(tt.handoverMemo||'').trim());
-                if(has) return {kind:'hmr', source:'인수메모', room:roomNo, tenant:tt.tenant||tenantName||'', diff:tt.handoverDiff?'있음':'-', rent:tt.handoverFixedUnpaid||'', elec:tt.handoverElecUnpaid||'', memo:tt.handoverMemo||''};
+                if(has) return {kind:'hmr', source:'인수메모', room:roomNo, tenant:tt.tenant||lookupTenantName||'', diff:tt.handoverDiff?'있음':'-', rent:tt.handoverFixedUnpaid||'', elec:tt.handoverElecUnpaid||'', memo:tt.handoverMemo||''};
             }
         }
     }catch(_e2){}
