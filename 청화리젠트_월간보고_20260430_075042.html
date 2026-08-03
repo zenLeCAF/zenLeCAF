@@ -4840,7 +4840,7 @@ function buildHelpContent(){
             ⚠️ 전기세 업로드는 <b>해당 호실·월의 기존 값을 덮어쓰는 작업</b>입니다. 의도치 않은 덮어쓰기를 막으려면 업로드 전에 <b>📦 전체 DB 다운로드</b>로 백업을 받아두세요.
         </div>
         <div class="hp-card tip">
-            💡 SheetJS 라이브러리는 인터넷에서 자동 로드됩니다. 인터넷 연결 없이 사용하려면 SheetJS를 별도로 다운로드해 HTML 파일과 같은 폴더에 두는 식으로 오프라인 캐시화도 가능합니다.
+            💡 CSV 파일은 인터넷 연결 없이도 업로드됩니다. 엑셀(.xlsx/.xls) 파일은 SheetJS 라이브러리가 인터넷에서 자동 로드되어야 하며, 오프라인 사용이 필요하면 CSV로 저장해 업로드하세요.
         </div>
 
         <h3 id="hp-entry">✍️ 데이터 입력 <span class="hp-kbd">상단 우측</span></h3>
@@ -5148,7 +5148,7 @@ function renderDataEntry2(){
         + '<button onclick="deExportJSON()" title="이 PC에 이름붙여서 저장" style="padding:6px 10px;background:#fff;color:#475569;border:1.5px solid #cbd5e1;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer">💾 백업</button>'
         + '<button onclick="exportBackupAsFile()" title="PC 저장 + 파일 다운로드" style="padding:6px 10px;background:#fff;color:#475569;border:1.5px solid #cbd5e1;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer">📤 내보내기</button>'
         + '<button onclick="showSnapshotsModal()" title="저장된 백업 목록" style="padding:6px 10px;background:#fff;color:#475569;border:1.5px solid #cbd5e1;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer">📂 목록</button>'
-        + '<button onclick="document.getElementById(\'de2ImportFile\').click()" title="파일에서 복원" style="padding:6px 10px;background:#fff;color:#475569;border:1.5px solid #cbd5e1;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer">📥 복원</button>'
+        + '<button onclick="triggerFilePicker(\'de2ImportFile\')" title="파일에서 복원" style="padding:6px 10px;background:#fff;color:#475569;border:1.5px solid #cbd5e1;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer">📥 복원</button>'
         + '<input type="file" id="de2ImportFile" accept=".json" style="display:none" onchange="deImportJSON(event)">'
         + '</span>'
         + '<button onclick="closeAllPanels()" style="background:#fff;color:#475569">✕ 닫기</button>'
@@ -5844,7 +5844,7 @@ function renderDataEntry(){
                 <button onclick="deExportJSON()" title="이 PC에 이름붙여서 저장" style="padding:6px 10px;background:#fff;color:#475569;border:1.5px solid #cbd5e1;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer">💾 백업</button>
                 <button onclick="exportBackupAsFile()" title="PC 저장 + 파일 다운로드" style="padding:6px 10px;background:#fff;color:#475569;border:1.5px solid #cbd5e1;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer">📤 내보내기</button>
                 <button onclick="showSnapshotsModal()" title="저장된 백업 목록" style="padding:6px 10px;background:#fff;color:#475569;border:1.5px solid #cbd5e1;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer">📂 목록</button>
-                <button onclick="document.getElementById('deImportFile').click()" title="파일에서 복원" style="padding:6px 10px;background:#fff;color:#475569;border:1.5px solid #cbd5e1;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer">📥 복원</button>
+                <button onclick="triggerFilePicker('deImportFile')" title="파일에서 복원" style="padding:6px 10px;background:#fff;color:#475569;border:1.5px solid #cbd5e1;border-radius:6px;font-weight:700;font-size:11px;cursor:pointer">📥 복원</button>
             </span>
             <input type="file" id="deImportFile" accept=".json" style="display:none" onchange="deImportJSON(event)">
         </div>
@@ -6740,7 +6740,7 @@ function bkAction(action){
             listEl.innerHTML = '<div style="font-size:11px;color:#64748b;margin-bottom:8px">총 ' + names.length + '개 백업 (최신순)</div>'
                 + '<table><thead><tr><th style="width:45%">이름</th><th style="width:25%">시점</th><th style="width:30%;text-align:right">동작</th></tr></thead><tbody>' + rows + '</tbody></table>';
         } else if(action === 'restore'){
-            document.getElementById('bkRestoreFile').click();
+            triggerFilePicker('bkRestoreFile');
             bkSetResult('restore', getBkHistoryHtml('restore'));
         }
     } catch(err){
@@ -6776,7 +6776,7 @@ function openBackupModal(){
             + '<div style="height:1px;background:#cbd5e1;margin:4px 0"></div>'
             + '<button onclick="closeBackupModal();showSnapshotsModal()" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:#f1f5f9;color:#1e293b;border:1.5px solid #cbd5e1;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;text-align:left">'
             + '<span style="font-size:24px">📂</span><div style="flex:1"><div style="font-size:14px;font-weight:800">백업 목록</div><div style="font-size:11px;color:#64748b;margin-top:2px;font-weight:500">PC 저장 백업 조회·복원·삭제</div></div></button>'
-            + '<button onclick="closeBackupModal();document.getElementById(\'deImportFile\').click()" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:#f1f5f9;color:#1e293b;border:1.5px solid #cbd5e1;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;text-align:left">'
+            + '<button onclick="closeBackupModal();triggerFilePicker(\'deImportFile\')" style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:#f1f5f9;color:#1e293b;border:1.5px solid #cbd5e1;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;text-align:left">'
             + '<span style="font-size:24px">📥</span><div style="flex:1"><div style="font-size:14px;font-weight:800">백업 복원</div><div style="font-size:11px;color:#64748b;margin-top:2px;font-weight:500">파일에서 데이터 복원</div></div></button>'
             + '</div>'
             + '<div style="padding:14px 22px;background:#f8fafc;display:flex;justify-content:flex-end;border-top:1px solid #e5e7eb">'
@@ -7531,8 +7531,18 @@ window._xlParsedRows = [];    // 마지막 파싱 결과 (적용 시 사용)
 function openXlUpload(mode){
     window._xlMode = mode;
     // 파일 선택 트리거
-    const picker = document.getElementById('xlFilePicker');
-    if(picker){ picker.value = ''; picker.click(); }
+    triggerFilePicker('xlFilePicker');
+}
+
+function triggerFilePicker(id){
+    const picker = document.getElementById(id);
+    if(!picker){
+        alert('파일 선택 요소를 찾을 수 없습니다: ' + id);
+        return;
+    }
+    // 같은 파일을 다시 고를 때도 change 이벤트가 발생하도록 클릭 전에 초기화합니다.
+    picker.value = '';
+    picker.click();
 }
 
 function showXlFormatGuide(mode){
@@ -7685,28 +7695,95 @@ function _xlMatchCategory(v){
     return '기타';
 }
 
+function _xlParseCsv(text){
+    const rows = [];
+    let row = [];
+    let field = '';
+    let inQuotes = false;
+    const src = String(text || '').replace(/^\uFEFF/, '');
+    for(let i = 0; i < src.length; i++){
+        const ch = src[i];
+        const next = src[i + 1];
+        if(inQuotes){
+            if(ch === '"' && next === '"'){
+                field += '"';
+                i++;
+            } else if(ch === '"'){
+                inQuotes = false;
+            } else {
+                field += ch;
+            }
+        } else {
+            if(ch === '"'){
+                inQuotes = true;
+            } else if(ch === ','){
+                row.push(field);
+                field = '';
+            } else if(ch === '\n'){
+                row.push(field);
+                rows.push(row);
+                row = [];
+                field = '';
+            } else if(ch !== '\r'){
+                field += ch;
+            }
+        }
+    }
+    if(field !== '' || row.length){
+        row.push(field);
+        rows.push(row);
+    }
+    const nonEmptyRows = rows.filter(r => r.some(c => String(c || '').trim() !== ''));
+    if(nonEmptyRows.length === 0) return [];
+    const headers = nonEmptyRows[0].map(h => String(h || '').trim());
+    return nonEmptyRows.slice(1).map(r => {
+        const obj = {};
+        headers.forEach((h, idx) => {
+            if(h) obj[h] = r[idx] === undefined ? '' : r[idx];
+        });
+        return obj;
+    });
+}
+
 function xlHandleFile(event){
-    const file = event.target.files[0];
-    if(!file) return;
-    if(typeof XLSX === 'undefined'){
-        alert('엑셀 라이브러리(SheetJS)가 로드되지 않았습니다. 인터넷 연결을 확인하고 페이지를 다시 로드해 보세요.');
+    const input = event.target;
+    const file = input.files[0];
+    if(!file){
+        input.value = '';
+        return;
+    }
+    const isCsv = /\.csv$/i.test(file.name || '');
+    if(typeof XLSX === 'undefined' && !isCsv){
+        alert('엑셀 라이브러리(SheetJS)가 로드되지 않았습니다. 인터넷 연결을 확인하고 페이지를 다시 로드해 보세요.\n\nCSV 파일은 인터넷 연결 없이도 업로드할 수 있습니다.');
+        input.value = '';
         return;
     }
     const reader = new FileReader();
+    reader.onerror = () => {
+        alert('파일을 읽을 수 없습니다. 파일이 열려 있거나 손상되었는지 확인해 주세요.');
+        input.value = '';
+    };
     reader.onload = (ev) => {
         try {
-            const data = new Uint8Array(ev.target.result);
-            const wb = XLSX.read(data, {type:'array', cellDates:true});
-            const ws = wb.Sheets[wb.SheetNames[0]];
-            const rows = XLSX.utils.sheet_to_json(ws, {defval:'', raw:false, dateNF:'yyyy-mm-dd'});
+            let rows;
+            if(isCsv && typeof XLSX === 'undefined'){
+                rows = _xlParseCsv(ev.target.result);
+            } else {
+                const data = new Uint8Array(ev.target.result);
+                const wb = XLSX.read(data, {type:'array', cellDates:true});
+                const ws = wb.Sheets[wb.SheetNames[0]];
+                rows = XLSX.utils.sheet_to_json(ws, {defval:'', raw:false, dateNF:'yyyy-mm-dd'});
+            }
             if(window._xlMode === 'expense') xlPreviewExpense(rows, file.name);
             else if(window._xlMode === 'elec') xlPreviewElec(rows, file.name);
         } catch(err){
-            alert('엑셀 파일 읽기 실패: ' + err.message);
+            alert('파일 읽기 실패: ' + err.message);
+        } finally {
+            input.value = '';
         }
     };
-    reader.readAsArrayBuffer(file);
-    event.target.value = '';
+    if(isCsv && typeof XLSX === 'undefined') reader.readAsText(file, 'utf-8');
+    else reader.readAsArrayBuffer(file);
 }
 
 function xlPreviewExpense(rows, fname){
